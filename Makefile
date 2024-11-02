@@ -1,7 +1,9 @@
-include ../../Config.mk
+CIRCLESTDLIBHOME = ../circle-stdlib
 
-CIRCLEHOME = ../../libs/circle
-NEWLIBDIR = ../../install/$(NEWLIB_ARCH)
+include $(CIRCLESTDLIBHOME)/Config.mk
+
+CIRCLEHOME = $(CIRCLESTDLIBHOME)/libs/circle
+NEWLIBDIR = $(CIRCLESTDLIBHOME)/install/$(NEWLIB_ARCH)
 
 OBJS	= main.o kernel.o
 
