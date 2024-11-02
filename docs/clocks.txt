@@ -1,0 +1,19 @@
+Genesis speeds
+Motorola 68000: 7.6 MHz
+Zilog Z80: 3.58 MHz
+YM2612: 7.67 MHz / 130ns -> 28 clocks @ 216mhz
+ - FM cycle / internal clock: 6 master clocks (1.2782 Mhz / 782 ns) 
+ - computation cycle = 24 cycles (6 ch * 4 op) (319.54 KHz / 3129 ns)
+ - registers $30..$FF write limit: 1/2 full cycle duration
+ according to data sheet:
+ - no wait between writes to addresses $21-$2F (except $28)
+ - Address register:                    17 mclk -> 2.8 (1 + 1.8) FM clk     -> 451.1 kHz ( 2.22 us)
+   * 12 possible
+ - Data on operator register:           83 mclk -> 13.8 (12 + 1.8) FM clk   ->  92.4 kHz (10.8 us)
+ - Data on channel-wide register:       47 mclk ->  7.8 (6 + 1.8) FM clk    -> 163.2 kHz ( 6.13 us)
+ - key on/off:                     112~116 mclk -> 18.6~19.3 FM clk         ->  66.1 kHz (15.1 us)
+ - Full sample (each oper added once): 144 mclk -> 24 FM clk                ->  53.3 kHz (18.8 us)
+
+Spinbus:
+ - SCK: 4 mhz (250ns)
+ - CMD: 1 mhz (1us)
