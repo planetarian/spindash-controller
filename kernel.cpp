@@ -31,6 +31,7 @@
 #include "queue"
 #include "string"
 #include "cmath"
+#include "spindashgadget.h"
 
 
 // See: http://www.deimos.ca/notefreqs/
@@ -79,7 +80,7 @@ CKernel::CKernel (void)
 #ifndef USB_GADGET_MODE
 	m_pUSB (new CUSBHCIDevice (&m_Interrupt, &m_Timer, TRUE)), // TRUE: enable plug-and-play
 #else
-	m_pUSB (new CUSBMIDIGadget (&m_Interrupt)),
+	m_pUSB (new CUSBSpindashMIDIGadget (&m_Interrupt)),
 #endif
 	m_pMIDIDevice (0),
 	m_pKeyboard (0),
@@ -265,7 +266,8 @@ TShutdownMode CKernel::Run (void)
                         YMQueueNoteStop(chip, channel);
                     m_ChannelKeys[m_NextChannel] = note.KeyNumber;
                     m_LastChannelKeys[m_NextChannel] = note.KeyNumber;
-                    u16 noteShort = YMQueueNote(chip, channel, note, !reuse);
+                    u16 noteShort =
+                    YMQueueNote(chip, channel, note, !reuse);
                     m_Logger.Write (FromKernel, LogNotice, "Note: chip %2d:%d %4dhz b:%d fnum:%4d (%04X)",
                         chip+1, channel+1, note.Frequency, noteShort >> 11, noteShort & 0x7ff, noteShort & 0x7ff);
                     // prep for next note

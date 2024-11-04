@@ -42,7 +42,7 @@
 #define UART_RX_PIN 15
 #define UART_TX_PIN 18
 
-//#define USB_GADGET_MODE
+#define USB_GADGET_MODE
 
 #define RET_PIN 23
 #define YM_SENT_PIN 17
@@ -93,7 +93,7 @@
 #define ERROR_YM_IDX_OUTOFRANGE 0xf8 // 11111000
 #define ERROR_YM_DOUBLE_SUBMIT  0xf9 // 11111001
 
-#define YM_COUNT 20
+#define YM_COUNT 2
 #define YM_CHANNELS 6
 #define SYNC_WRITE_LIMIT 100
 #define QUEUE_SIZE_LIMIT 1000
@@ -198,6 +198,7 @@ private:
     CTimer            m_Timer;
     CLogger            m_Logger;
 	CUSBController		*m_pUSB;
+	//CUSBController		*m_pUSBGadget;
 	CUSBMIDIDevice     * volatile m_pMIDIDevice;
 	CUSBKeyboardDevice * volatile m_pKeyboard;
 
