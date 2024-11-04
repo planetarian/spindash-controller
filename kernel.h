@@ -37,12 +37,23 @@
 #include "vector"
 #include "map"
 
+#define YM_COUNT 20
+#define YM_CHANNELS 6
+#define SYNC_WRITE_LIMIT 100
+#define QUEUE_SIZE_LIMIT 1000
+
+#define MIDI_NOTE_OFF	0b1000
+#define MIDI_NOTE_ON	0b1001
+#define MIDI_CC		0b1011
+#define MIDI_CC_VOLUME	7
+#define KEY_NONE	255
+
+#define USB_GADGET_MODE
+
 #define SERIAL_BAUD 3000000
 
 #define UART_RX_PIN 15
 #define UART_TX_PIN 18
-
-#define USB_GADGET_MODE
 
 #define RET_PIN 23
 #define YM_SENT_PIN 17
@@ -92,17 +103,6 @@
 // YM errors
 #define ERROR_YM_IDX_OUTOFRANGE 0xf8 // 11111000
 #define ERROR_YM_DOUBLE_SUBMIT  0xf9 // 11111001
-
-#define YM_COUNT 2
-#define YM_CHANNELS 6
-#define SYNC_WRITE_LIMIT 100
-#define QUEUE_SIZE_LIMIT 1000
-
-#define MIDI_NOTE_OFF	0b1000
-#define MIDI_NOTE_ON	0b1001
-#define MIDI_CC		0b1011
-#define MIDI_CC_VOLUME	7
-#define KEY_NONE	255
 
 enum TShutdownMode
 {

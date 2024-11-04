@@ -266,10 +266,10 @@ TShutdownMode CKernel::Run (void)
                         YMQueueNoteStop(chip, channel);
                     m_ChannelKeys[m_NextChannel] = note.KeyNumber;
                     m_LastChannelKeys[m_NextChannel] = note.KeyNumber;
-                    u16 noteShort =
+                    //u16 noteShort =
                     YMQueueNote(chip, channel, note, !reuse);
-                    m_Logger.Write (FromKernel, LogNotice, "Note: chip %2d:%d %4dhz b:%d fnum:%4d (%04X)",
-                        chip+1, channel+1, note.Frequency, noteShort >> 11, noteShort & 0x7ff, noteShort & 0x7ff);
+                    //m_Logger.Write (FromKernel, LogNotice, "Note: chip %2d:%d %4dhz b:%d fnum:%4d (%04X)",
+                        //chip+1, channel+1, note.Frequency, noteShort >> 11, noteShort & 0x7ff, noteShort & 0x7ff);
                     // prep for next note
                     if (++m_NextChannel == YM_COUNT*YM_CHANNELS)
                         m_NextChannel = 0;
@@ -402,7 +402,7 @@ void CKernel::YMPrepare (u8 chip, u8 channelIdx) {
     YMQueueData(chip, 0x50+chMod, 0x5F, bank); // OP1 AttackRate/RateScale (AR/RS)
     YMQueueData(chip, 0x54+chMod, 0x99, bank); // OP3
     YMQueueData(chip, 0x58+chMod, 0x5F, bank); // OP2
-    YMQueueData(chip, 0x5C+chMod, 0x94, bank); // OP4
+    YMQueueData(chip, 0x5C+chMod, 0x92, bank); // OP4 (original 0x94)
     YMQueueData(chip, 0x60+chMod, 0x05, bank); // OP1 DecayRate / AmpMod Enable (DR[D1R]/AM)
     YMQueueData(chip, 0x64+chMod, 0x05, bank); // OP3
     YMQueueData(chip, 0x68+chMod, 0x05, bank); // OP2
@@ -574,6 +574,7 @@ bool CKernel::YMWrite (u8 chip, u8 address, u8 data, bool bank)
     return byteCompleted;
 }
 
+
 /// @brief Writes a byte of data to the FPGA, and shifts the return bit into m_LastBits.
 /// @param data byte to write to the FPGA.
 /// @return true if the write resulted in the completion of a return data byte (stored in `m_LastReadByte`).
@@ -594,7 +595,7 @@ bool CKernel::WriteRead (u8 data)
     while (m_HasError && errCnt > 0) {
         // read another byte
         for (u8 i = 0; i < 8; i++)
-            WriteRead(CMD_DEBUG);
+            WriteReadRaw(CMD_DEBUG);
 
         // third byte is the error code
         if (m_ErrorCode == 0) {
