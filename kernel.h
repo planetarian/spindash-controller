@@ -148,6 +148,7 @@ struct PlayedNote
 {
     u8  KeyNumber;
     u16 Frequency;
+    u8 Velocity;
     bool KeyOn;
 };
 
@@ -167,8 +168,8 @@ public:
     u32 YMProcessQueue();
     u16 YMGetNote(u8 octave, u16 fnum);
     u16 YMQueueNote(u8 chip, u8 channel, PlayedNote note, bool prepare);
-    u16 YMQueueNote(u8 chip, u8 channel, u16 frequency);
-    void YMQueueNoteRaw(u8 chip, u8 channel, u16 note);
+    u16 YMQueueNote(u8 chip, u8 channel, u16 frequency, u8 velocity = 0x7f);
+    void YMQueueNoteRaw(u8 chip, u8 channel, u16 note, u8 velocity = 0x7f);
     void YMQueueNoteStop(u8 chip, u8 channel);
     void YMReset ();
     YMSyncResult SpinbusSync();
@@ -240,6 +241,8 @@ private:
 
     YMQueue queues[YM_COUNT];
     std::queue<PlayedNote> m_Notes;
+
+    bool    m_DoReset;
     
     bool    m_Reading = false;
     bool    m_SentState = false;

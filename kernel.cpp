@@ -207,6 +207,11 @@ TShutdownMode CKernel::Run (void)
 
         while (true) {
             m_Timer.usDelay(1);
+            if (m_DoReset) {
+                m_Timer.MsDelay(1000);
+                m_DoReset = false;
+                break;
+            }
 		    bool bUpdated = m_pUSB->UpdatePlugAndPlay ();
 
             if (bUpdated) {
@@ -232,7 +237,7 @@ TShutdownMode CKernel::Run (void)
             }
 
             // Play sounds
-            while (m_Notes.size() > 0) {
+            while (m_Notes.size() > 0 && !m_DoReset) {
                 PlayedNote note = m_Notes.front();
                 if (note.KeyOn) {
                     bool reuse = 0;
@@ -268,8 +273,8 @@ TShutdownMode CKernel::Run (void)
                     m_LastChannelKeys[m_NextChannel] = note.KeyNumber;
                     //u16 noteShort =
                     YMQueueNote(chip, channel, note, !reuse);
-                    //m_Logger.Write (FromKernel, LogNotice, "Note: chip %2d:%d %4dhz b:%d fnum:%4d (%04X)",
-                        //chip+1, channel+1, note.Frequency, noteShort >> 11, noteShort & 0x7ff, noteShort & 0x7ff);
+                    //m_Logger.Write (FromKernel, LogNotice, "Note: chip %2d:%d %4dhz b:%d fnum:%4d (%04X) vel:%02X",
+                        //chip+1, channel+1, note.Frequency, noteShort >> 11, noteShort & 0x7ff, noteShort & 0x7ff, note.Velocity);
                     // prep for next note
                     if (++m_NextChannel == YM_COUNT*YM_CHANNELS)
                         m_NextChannel = 0;
@@ -414,7 +419,7 @@ void CKernel::YMPrepare (u8 chip, u8 channelIdx) {
     YMQueueData(chip, 0x80+chMod, 0x11, bank); // OP1 ReleaseRate / SustainLevel (RR/SL)
     YMQueueData(chip, 0x84+chMod, 0x11, bank); // OP3
     YMQueueData(chip, 0x88+chMod, 0x11, bank); // OP2
-    YMQueueData(chip, 0x8C+chMod, 0xA2, bank); // OP4 (def:A6)
+    YMQueueData(chip, 0x8C+chMod, 0xA3, bank); // OP4 (def:A6)
     YMQueueData(chip, 0x90+chMod, 0x00, bank); // OP1 SSG-EG
     YMQueueData(chip, 0x94+chMod, 0x00, bank); // OP3
     YMQueueData(chip, 0x98+chMod, 0x00, bank); // OP2
@@ -439,7 +444,7 @@ u16 CKernel::YMQueueNote(u8 chip, u8 channel, PlayedNote note, bool prepare) {
     if (note.KeyOn) {
         if (prepare)
             YMPrepare(chip, channel);
-        return YMQueueNote(chip, channel, note.Frequency);
+        return YMQueueNote(chip, channel, note.Frequency, note.Velocity);
     }
     else {
         YMQueueNoteStop(chip, channel);
@@ -447,7 +452,7 @@ u16 CKernel::YMQueueNote(u8 chip, u8 channel, PlayedNote note, bool prepare) {
     }
 }
 
-u16 CKernel::YMQueueNote(u8 chip, u8 channel, u16 frequency) {
+u16 CKernel::YMQueueNote(u8 chip, u8 channel, u16 frequency, u8 velocity) {
     u16 fnum = (144*(float)frequency*pow(2,20)/7669857) / 8;
     u8 block = 2;
     while (fnum >= 2048)
@@ -456,11 +461,12 @@ u16 CKernel::YMQueueNote(u8 chip, u8 channel, u16 frequency) {
         block++;
     }
     u16 note = ((block & 0x7) << 11) | (fnum & 0x07ff);
-    YMQueueNoteRaw(chip, channel, note);
+    YMQueueNoteRaw(chip, channel, note, velocity);
     return note;
 }
 
-void CKernel::YMQueueNoteRaw(u8 chip, u8 channel, u16 note) {
+void CKernel::YMQueueNoteRaw(u8 chip, u8 channel, u16 note, u8 velocity) {
+    YMQueueData(chip, 0x4C + channel % 3, 0x7f-velocity, channel > 2);
     YMQueueData(chip, 0xA4 + channel % 3, note >> 8, channel > 2); // block/fnum (high)
     YMQueueData(chip, 0xA0 + channel % 3, note & 0xff, channel > 2); // fnum (low)
     YMQueueData(chip, 0x28, 0xF0 + channel + (channel > 2 ? 1 : 0)); // Key on
@@ -505,6 +511,7 @@ YMSyncResult CKernel::SpinbusSync() {
 void CKernel::YMQueueData(u8 chip, u8 address, u8 data, bool bank) {
     if (queues[chip].queue.size() > QUEUE_SIZE_LIMIT) {
         m_Logger.Write (FromKernel, LogNotice, "Hit queue limit (%d) for chip %d (addr %02X data %02X)", QUEUE_SIZE_LIMIT, chip, address, data);
+        m_DoReset = true;
         m_Timer.MsDelay(100);
     }
     else
@@ -770,7 +777,7 @@ void CKernel::MIDIPacketHandler (unsigned nCable, u8 *pPacket, unsigned nLength)
             
 
             u16 freq = s_KeyFrequency[ucKeyNumber];
-            s_pThis->m_Notes.push({ucKeyNumber, freq, true});
+            s_pThis->m_Notes.push({ucKeyNumber, freq, (ucVelocity/4)+0x60, true});
 		}
 		else
 		{
