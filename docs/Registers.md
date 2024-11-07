@@ -363,16 +363,16 @@ The block acts like the octave: frequency is doubled every time it's incremented
 
 The algorithm describes which operators modulate other operators, and which operators generate the final output. Different algorithms can generate wildly different sounds. The are eight available arrangements.
 
-| Algo      | Arrangement               |   |   |   |
-|-----------|---------------------------|---|---|---|
-| 0 (`000`) | `S1`->`S2`->`S3`->`S4`    |   |   |   |
-| 1 (`001`) | (`S1`,`S2`)->`S3`->`S4`   |   |   |   |
-| 2 (`010`) | (`S1`,`S2`->`S3`)->`S4`   |   |   |   |
-| 3 (`011`) | (`S1`->`S2`,`S3`)->`S4`   |   |   |   |
-| 4 (`100`) | (`S1`->`S2`),(`S3`->`S4`) |   |   |   |
-| 5 (`101`) | `S1`->(`S2`,`S3`,`S4`)    |   |   |   |
-| 6 (`110`) | `S1`->`S2`,`S3`,`S4`      |   |   |   |
-| 7 (`111`) | `S1`,`S2`,`S3`,`S4`       |   |   |   |
+| Algo      | Arrangement               |
+|-----------|---------------------------|
+| 0 (`000`) | `S1`->`S2`->`S3`->`S4`    |
+| 1 (`001`) | (`S1`,`S2`)->`S3`->`S4`   |
+| 2 (`010`) | (`S1`,`S2`->`S3`)->`S4`   |
+| 3 (`011`) | (`S1`->`S2`,`S3`)->`S4`   |
+| 4 (`100`) | (`S1`->`S2`),(`S3`->`S4`) |
+| 5 (`101`) | `S1`->(`S2`,`S3`,`S4`)    |
+| 6 (`110`) | `S1`->`S2`,`S3`,`S4`      |
+| 7 (`111`) | `S1`,`S2`,`S3`,`S4`       |
 
 Operator S1 can modulate itself (on top of the algorithm's arrangement), FEED controls how much it does so. 0 is no feedback, higher values increase the self-modulation.
 
