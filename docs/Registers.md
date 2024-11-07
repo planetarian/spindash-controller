@@ -1,4 +1,5 @@
-# Test registers
+# FM Registers
+See: <a href="https://www.plutiedev.com/ym2612-registers">[PlutieDev] YM2612 register reference</a>
 
 ## `$22` [Global]: low frequency oscillator
 
@@ -424,6 +425,7 @@ AMS only affects those operators where the `AM` bit has been set, and it can be 
 
 
 # `$21`, `$2C` [Global] Test registers
+See: <a href="https://gendev.spritesmind.net/forum/viewtopic.php?f=24&t=386&start=825#p31285">[Spritesmind.net] New Documentation: An authoritative reference on the YM2612</a>
 
 `$21:0`: Select which of two unknown signals is read as bit 14 of the test read output.
 
@@ -484,10 +486,3 @@ Then, four cycles after that, the data on the output will be for Ch 1 Op 1.
 
 Presumably, the SYNC signal is when it begins calculation of Ch 1 Op 1, and the output is available after four cycles.
 Sample on each internal cycle to receive the data for channels 1-6 operator 1, then 1-6 op 3, then 1-6 op 2, then 1-6 op 4.
-
-
-# References
-
-<a href="https://www.plutiedev.com/ym2612-registers">[PlutieDev] YM2612 register reference</a>
-
-<a href="https://gendev.spritesmind.net/forum/viewtopic.php?f=24&t=386&start=825#p31285">[Spritesmind.net] New Documentation: An authoritative reference on the YM2612</a> 
