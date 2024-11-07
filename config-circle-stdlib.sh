@@ -1,6 +1,11 @@
 #! /bin/bash
 
+
 cd circle-stdlib
+
+# apply multi-core and device ID edits
+sed -i -r 's/\/\/(#define ARM_ALLOW_MULTI_CORE)/\1/g' libs/circle/include/circle/sysconfig.h
+sed -i -r 's/(#define USB_GADGET_VENDOR_ID\s+0x)0000/\1f0d4/g' libs/circle/include/circle/sysconfig.h
 
 ./configure -r 4 \
     -o MULTICORE=1 \
@@ -13,6 +18,7 @@ cd circle-stdlib
     -o SDCARD=~/spindash-controller/circle-stdlib/libs/circle/boot/sd
     
 
+# i don't have a clue what i'm doing so lol duplicate stuff
 cat >> Config.mk<< EOF
 
 # adjust according to environment
