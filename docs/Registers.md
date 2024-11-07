@@ -421,7 +421,7 @@ AMS only affects those operators where the `AM` bit has been set, and it can be 
 | `10`  | ±5.9 dB    |
 | `11`  | ±11.8 dB   |
 
-* `PMS` actually stands for "phase modulation sensivity" (since the YM2612 actually does phase modulation instead of frequency modulation). The outcome is more or less the same, aside from rounding errors.
+* `PMS` actually stands for "phase modulation sensitivity" (since the YM2612 actually does phase modulation instead of frequency modulation). The outcome is more or less the same, aside from rounding errors.
 
 
 # `$21`, `$2C` [Global] Test registers
