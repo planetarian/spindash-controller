@@ -1,3 +1,4 @@
 [submodule "circle-stdlib"]
 	path = circle-stdlib
 	url = https://github.com/planetarian/spindash-circle-stdlib
+	ignore = dirty
